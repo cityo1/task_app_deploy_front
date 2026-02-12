@@ -11,7 +11,7 @@ const Navbar = () => {
   const path = useLocation();
   const isActive = (location) => path.pathname === location;
   const googleClientId = import.meta.env.VITE_AUTH_CLIENT_ID;
-  console.log(googleClientId);
+  // console.log(googleClientId);
   const dispatch = useDispatch();
   const state = useSelector((state) => state.auth.authData);
   const { name } = state || {}; //로그아웃하면 state없어지므로 공란으로 놔둠
