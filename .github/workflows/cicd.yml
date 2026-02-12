@@ -1,0 +1,37 @@
+# Referrence: https://synuns.tistory.com/75
+name: CICD
+
+# 이벤트가 실행될 workflow 정의
+on:
+  push:
+    branches:
+      - main
+
+# 작업 정의(jobs): build, deploy
+jobs:
+  build:
+    runs-on: ubuntu-latest # 임의로 지은 이름
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+      - name: Create env file
+        run: |
+          touch .env
+          echo "${{ secrets.VITE_AUTH_CLIENT_ID }}" > .env
+      - name: Sign in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build Docker Image
+        run: docker build -t cityo1/task_app_front_deploy .
+      - name: Push Docker Image
+        run: docker push cityo1/task_app_front_deploy:latest
+
+  deploy:
+    needs: build
+    runs-on: aws-ec2 # cmd에서 설정 시 임의로 지은 이름
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull cityo1/task_app_front_deploy:latest
+      - name: Delete Existing Container
+        run: docker rm -f task-container # 컨테이너 이름
+      - name: Run container
+        run: docker run -d -p 80:80 --name task-container cityo1/task_app_front_deploy
