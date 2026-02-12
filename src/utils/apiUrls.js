@@ -1,4 +1,4 @@
-const DOMAIN = 'https://taskbackend.cityo.cloud/';
+const DOMAIN = 'https://taskbackend.cityo.cloud';
 
 const GET_TASKS_API_URL = `${DOMAIN}/get_tasks`;
 const POST_TASK_API_URL = `${DOMAIN}/post_task`;
